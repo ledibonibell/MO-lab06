@@ -100,18 +100,19 @@ A = np.array([
     [1, 16, 2, 16]
 ])
 
-c1 = np.array([-1, -1, -1, -1, -1])
-A1 = -1 * np.transpose(A)
-b1 = np.array([-1, -1, -1, -1])
+c = np.array([1, 1, 1, 1])
+b = np.array([1, 1, 1, 1, 1])
 
-c2 = np.array([1, 1, 1, 1])
-A2 = A
-b2 = np.array([1, 1, 1, 1, 1])
+# A = np.array([
+#     [1, 3, 9, 6],
+#     [2, 6, 2, 3],
+#     [7, 2, 6, 5]
+# ])
 
 print("Симплекс-таблица для игрока A:")
-print_matrix(dummy_variable(A1, b1, c1))
+print_matrix(dummy_variable(-1 * np.transpose(A), -1 * c, -1 * b))
 
-result_variables_A, result_value_A = simplex_min(dummy_variable(A1, b1, c1))
+result_variables_A, result_value_A = simplex_min(dummy_variable(-1 * np.transpose(A), -1 * c, -1 * b))
 
 print("\nОптимальное значение переменных:")
 print(f"u1 = {round(result_variables_A[0], 4)} \nu2 = {round(result_variables_A[1], 4)} \nu3 = {round(result_variables_A[2], 4)} \nu4 = {round(result_variables_A[3], 4)} \nu5 = {round(result_variables_A[4], 4)}")
@@ -120,9 +121,9 @@ print("W =", round(result_value_A, 4))
 
 
 print("\nСимплекс-таблица для игрока В:")
-print_matrix(dummy_variable(A2, b2, c2))
+print_matrix(dummy_variable(A, b, c))
 
-result_variables_B, result_value_B = simplex_max(dummy_variable(A2, b2, c2))
+result_variables_B, result_value_B = simplex_max(dummy_variable(A, b, c))
 
 print("\nОптимальное значение переменных:")
 print(f"v1 = {round(result_variables_B[0], 4)} \nv2 = {round(result_variables_B[1], 4)} \nv3 = {round(result_variables_B[2], 4)} \nv4 = {round(result_variables_B[3], 4)}")
@@ -139,3 +140,19 @@ h = -1 / result_value_B
 print("-----------------------\nh = ", round(h, 4))
 print(f"y1 = {round(h * result_variables_B[0], 4)} \ny2 = {round(h * result_variables_B[1], 4)} \ny3 = {round(h * result_variables_B[2], 4)} \ny4 = {round(h * result_variables_B[3], 4)}")
 print(f"Оптимальная смешанная стратегия игрока В - ({round(h * result_variables_B[0], 4)}, {round(h * result_variables_B[1], 4)}, {round(h * result_variables_B[2], 4)}, {round(h * result_variables_B[3], 4)})")
+
+print("\nЦена игры будет равна:\n1/W = 1/Z =", round(g, 4))
+
+mat = 0
+for i in range(len(A)):
+    for j in range(len(A[0])):
+        mat += A[i][j] * g * result_variables_A[i] * h * result_variables_B[j]
+print("\nМатематическое ожидание A:\nmat =", round(mat, 4))
+
+B = np.transpose(A)
+mat = 0
+for i in range(len(B)):
+    for j in range(len(B[0])):
+        mat += B[i][j] * g * result_variables_A[j] * h * result_variables_B[i]
+print("\nМатематическое ожидание B:\nmat =", round(mat, 4))
+
